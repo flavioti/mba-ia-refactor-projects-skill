@@ -10,3 +10,5 @@ venv/
 # SQLite
 *.db
 instance/
+CLAUDE.local.md
+.python-version

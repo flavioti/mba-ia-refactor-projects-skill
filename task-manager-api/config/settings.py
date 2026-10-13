@@ -1,0 +1,35 @@
+import os
+import secrets
+
+from dotenv import load_dotenv
+
+load_dotenv()
+
+
+def _env_bool(name, default=False):
+    value = os.environ.get(name)
+    if value is None:
+        return default
+    return value.strip().lower() in ("1", "true", "yes", "on")
+
+
+class Settings:
+    """Configuração lida do ambiente (ver .env.example)."""
+
+    # Sem SECRET_KEY no ambiente, gera uma chave efêmera (tokens expiram a cada restart).
+    SECRET_KEY = os.environ.get("SECRET_KEY") or secrets.token_hex(32)
+    SQLALCHEMY_DATABASE_URI = os.environ.get("DATABASE_URL", "sqlite:///tasks.db")
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
+
+    DEBUG = _env_bool("FLASK_DEBUG")
+    HOST = os.environ.get("HOST", "127.0.0.1")
+    PORT = int(os.environ.get("PORT", "5000"))
+    CORS_ORIGINS = os.environ.get("CORS_ORIGINS", "*")
+    LOG_LEVEL = os.environ.get("LOG_LEVEL", "INFO")
+
+    TOKEN_MAX_AGE_SECONDS = int(os.environ.get("TOKEN_MAX_AGE_SECONDS", "28800"))
+
+    SMTP_HOST = os.environ.get("SMTP_HOST", "smtp.gmail.com")
+    SMTP_PORT = int(os.environ.get("SMTP_PORT", "587"))
+    SMTP_USER = os.environ.get("SMTP_USER", "")
+    SMTP_PASSWORD = os.environ.get("SMTP_PASSWORD", "")
